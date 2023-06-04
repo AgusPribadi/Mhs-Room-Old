@@ -16,8 +16,8 @@
     <input type="submit" value="Login" />
   </form>
 
-  <p>Havent signed up yet?</p>
-  <a href="{% url 'register' %}">Sign up</a>
+  <p>Belum mendaftarkan akun?</p>
+  <a href="{% url 'register' %}">Daftar</a>
 </div>
 
 {% else %}
@@ -29,8 +29,8 @@
 
     <input type="submit" value="Register" />
   </form>
-  <p>Already signed up yet?</p>
-  <a href="{% url 'login' %}">Login</a>
+  <p>Sudah mendaftarkan akun?</p>
+  <a href="{% url 'login' %}">Masuk</a>
 </div>
 {% endif %}
 
