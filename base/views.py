@@ -7,13 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Room, Topic, Message, User
 from .forms import RoomForm, UserForm, MyUserCreationForm
 
-# rooms = [
-#     {'id':1, 'name':'Lets learn python!'},
-#     {'id':2, 'name':'Design with me'},
-#     {'id':3, 'name':'Frontend Developers'},
-# ]
-
-
+# Mengatur Login #
 def loginPage(request):
     page = 'login'
 
@@ -40,11 +34,15 @@ def loginPage(request):
 
     context = {'page': page}
     return render(request, 'base/login_register.html', context)
+# end Mengatur Login #
 
+# Mengatur Logout #
 def logoutUser(request):
     logout(request)
     return redirect('home')
+# end Mengatur Logout #
 
+# Mengatur Pendaftaran Akun #
 def registerPage(request):
     form = MyUserCreationForm()
 
@@ -59,7 +57,9 @@ def registerPage(request):
         else:
             messages.error(request, 'An error occured during registration')
     return render(request, 'base/login_register.html', {'form': form})
+# end Mengatur Pendaftaran Akun #
 
+# Mengatur Home #
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     
@@ -76,8 +76,9 @@ def home(request):
     context = {'rooms': rooms, 'topics': topics,
                'room_count': room_count, 'room_messages':room_messages}
     return render(request, 'base/home.html', context )
+# end Mengatur Home #
 
-
+# Mengatur Room #
 def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = room.message_set.all()
@@ -95,7 +96,9 @@ def room(request, pk):
     context = {'room':room, 'room_messages': room_messages,
                'participants':participants}
     return render(request, 'base/room.html', context)
+# end Mengatur Room #
 
+# Mengatur Profile #
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
     rooms = user.room_set.all()
@@ -103,9 +106,9 @@ def userProfile(request, pk):
     topics = Topic.objects.all()
     context = {'user': user, 'rooms': rooms, 'room_messages': room_messages, 'topics': topics}
     return render(request, 'base/profile.html', context)
+# end Mengatur Profile #
 
-
-
+# Mengatur Pembuatan Room #
 @login_required(login_url='login')
 def createRoom(request):
     form = RoomForm()
@@ -123,16 +126,16 @@ def createRoom(request):
 
     context = {'form': form, 'topics': topics}
     return render(request, 'base/room_form.html', context)
+# end Mengatur Pembuatan Room #
 
-
+# Mengatur Update Room #
 @login_required(login_url='login')
 def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
     topics = Topic.objects.all()
     if request.user != room.host:
-        return HttpResponse('You are not allowed here!!')
-
+        return HttpResponse('Kamu tidak bisa mengakses ini!!')
 
     if request.method == 'POST':
         topic_name = request.POST.get('topic')
@@ -145,29 +148,35 @@ def updateRoom(request, pk):
 
     context = {'form': form, 'topics': topics, 'room': room}
     return render(request, 'base/room_form.html', context)
+# end Mengatur Update Room #
 
+# Mengatur Hapus Room #
 @login_required(login_url='login')
 def deleteRoom(request, pk):
     room = Room.objects.get(id=pk)
 
     if request.user != room.host:
-        return HttpResponse('You are not allowed here!!')
+        return HttpResponse('Kamu tidak bisa mengakses ini!!')
     if request.method == 'POST':
         room.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj':room})
+# end Mengatur Hapus Room #
 
+# Mengatur Hapus Pesan #
 @login_required(login_url='login')
 def deleteMessage(request, pk):
     message = Message.objects.get(id=pk)
 
     if request.user != message.user:
-        return HttpResponse('You are not allowed here!!')
+        return HttpResponse('Kamu tidak bisa mengakses ini!!')
     if request.method == 'POST':
         message.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj':message})
+# end Mengatur Hapus Pesan #
 
+# Mengatur Update User #
 @login_required(login_url='login')
 def updateUser(request):
     user = request.user
@@ -180,12 +189,17 @@ def updateUser(request):
             return redirect('user-profile', pk=user.id)
 
     return render(request, 'base/update-user.html', {'form': form})
+# Mengatur Update User #
 
+# Mengatur Halaman Topic #
 def topicsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     topics = Topic.objects.filter(name__icontains=q)
     return render(request, 'base/topics.html', {'topics': topics})
+# end Mengatur halaman Topic #
 
+# Mengatur Halaman Activity #
 def activityPage(request):
     room_messages = Message.objects.all()
-    return render(request, 'base/activity.html', {'room_messages: room_messages'})
+    return render(request, 'base/activity.html', {'room_messages': room_messages})
+# end Mengatur Halaman Activity #
