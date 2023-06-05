@@ -1137,6 +1137,10 @@ a {
     gap: 0.5rem;
 }
 
+.room__description {
+    text-align: start;
+}
+
 .participants__list {
     padding: 2rem;
     height: 82.5vh;
