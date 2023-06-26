@@ -50,7 +50,7 @@
                         <span>{{ room.created|timesince }} yang lalu</span>
                     </div>
                     <div class="room__hosted">
-                        <p>Diselanggarakan oleh</p>
+                        <p>Diselenggarakan oleh</p>
                         <a href="{% url 'user-profile' room.host.id %}" class="room__author">
                             <div class="avatar avatar--small">
                                 <img src="{{ room.host.avatar.url }}" />
